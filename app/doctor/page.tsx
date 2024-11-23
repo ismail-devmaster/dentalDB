@@ -38,7 +38,6 @@ import {
   Users,
   MessageSquare,
   Settings,
-  Plus,
   User,
   Stethoscope,
   Menu,
@@ -54,17 +53,41 @@ import Treatments from "./treatments";
 import Billing from "./billing";
 import Messages from "./messages";
 
+interface Patient {
+  id: number;
+  name: string;
+  age: number;
+  lastVisit: string;
+  nextAppointment: string;
+  medicalHistory: string;
+  ongoingTreatments: string;
+  status: string;
+  priority: string;
+  allergies: string[];
+  procedures: string[];
+  notes: string;
+  image: string;
+}
+
+interface BillingRecord {
+  id: number;
+  patientId: number;
+  treatment: string;
+  amount: number;
+  date: string;
+  status: string;
+  paymentMethod: string;
+}
+
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("appointments");
   const [patients, setPatients] = useState(MockData.default.MockPatients);
-  const [appointments, setAppointments] = useState(
-    MockData.default.MockAppointments
-  );
+  const appointments = MockData.default.MockAppointments;
   const [billingRecords, setBillingRecords] = useState(
     MockData.default.MockBillingRecords
   );
-  const [messages, setMessages] = useState(MockData.default.MockMessages);
+  const [messages] = useState(MockData.default.MockMessages);
   const [isAddPatientDialogOpen, setIsAddPatientDialogOpen] = useState(false);
   const [isAddBillingRecordDialogOpen, setIsAddBillingRecordDialogOpen] =
     useState(false);
@@ -75,15 +98,20 @@ export default function Dashboard() {
     document.documentElement.classList.toggle("dark");
   };
 
-  const addPatient = (newPatient: any) => {
+  const addPatient = (newPatient: Omit<Patient, 'id'>) => {
     setPatients([...patients, { ...newPatient, id: patients.length + 1 }]);
     setIsAddPatientDialogOpen(false);
   };
 
-  const addBillingRecord = (newRecord: any) => {
+  const addBillingRecord = (newRecord: Omit<BillingRecord, 'id'>) => {
     setBillingRecords([
       ...billingRecords,
-      { ...newRecord, id: billingRecords.length + 1 },
+      { 
+        ...newRecord, 
+        id: billingRecords.length + 1,
+        status: 'Pending',
+        paymentMethod: 'Cash'
+      },
     ]);
     setIsAddBillingRecordDialogOpen(false);
   };
@@ -171,6 +199,7 @@ export default function Dashboard() {
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
+                
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -313,7 +342,20 @@ export default function Dashboard() {
             onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target as HTMLFormElement);
-              const newPatient = Object.fromEntries(formData.entries());
+              const newPatient: Omit<Patient, 'id'> = {
+                name: formData.get('name') as string,
+                age: Number(formData.get('age')),
+                lastVisit: formData.get('lastVisit') as string,
+                nextAppointment: formData.get('nextAppointment') as string,
+                medicalHistory: formData.get('medicalHistory') as string,
+                ongoingTreatments: '',
+                status: 'Active',
+                priority: 'Normal',
+                allergies: [],
+                procedures: [],
+                notes: '',
+                image: '/placeholder-avatar.jpg'
+              };
               addPatient(newPatient);
             }}
           >
@@ -390,8 +432,14 @@ export default function Dashboard() {
             onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target as HTMLFormElement);
-              const newRecord = Object.fromEntries(formData.entries());
-
+              const newRecord: Omit<BillingRecord, 'id'> = {
+                patientId: Number(formData.get('patientId')),
+                treatment: formData.get('treatment') as string,
+                amount: Number(formData.get('amount')),
+                date: formData.get('date') as string,
+                status: 'Pending',
+                paymentMethod: 'Cash'
+              };
               addBillingRecord(newRecord);
             }}
           >
