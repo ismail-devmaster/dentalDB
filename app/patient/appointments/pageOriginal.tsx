@@ -50,7 +50,7 @@ export default function AppointmentsPageComponent() {
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState<string>("");
-  const [upcomingAppointments, setUpcomingAppointments] = useState([
+  const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>([
     {
       id: 1,
       date: "June 15, 2023",
@@ -73,11 +73,10 @@ export default function AppointmentsPageComponent() {
       reason: "Annual Physical",
     },
   ]);
-  const [waitingAppointments, setWaitingAppointments] = useState([]);
-  const [appointmentToReschedule, setAppointmentToReschedule] = useState(null);
+  const [waitingAppointments, setWaitingAppointments] = useState<Appointment[]>([]);
+  const [appointmentToReschedule, setAppointmentToReschedule] = useState<Appointment | null>(null);
   const [isRescheduleDialogOpen, setIsRescheduleDialogOpen] = useState(false);
-  const [selectedAppointmentDetails, setSelectedAppointmentDetails] =
-    useState(null);
+  const [selectedAppointmentDetails, setSelectedAppointmentDetails] = useState<Appointment | null>(null);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("book-new");
 
@@ -102,6 +101,15 @@ export default function AppointmentsPageComponent() {
   ];
 
   const handleConfirmAppointment = () => {
+    if (!date) {
+      toast({
+        title: "Error",
+        description: "Please select a date for your appointment",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newAppointment = {
       id: Date.now(),
       date: format(date, "MMMM d, yyyy"),
@@ -148,7 +156,7 @@ export default function AppointmentsPageComponent() {
     });
   };
 
-  const handleReschedule = (appointment) => {
+  const handleReschedule = (appointment: Appointment) => {
     setAppointmentToReschedule(appointment);
     setIsRescheduleDialogOpen(true);
   };
