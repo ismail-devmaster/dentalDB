@@ -41,12 +41,6 @@ const ReceptionistDashboardComponent = ({
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  const [patientQueue, setPatientQueue] = React.useState([
-    { id: 1, name: "John Doe", status: "Waiting", timeLeft: "10 mins" },
-    { id: 2, name: "Jane Smith", status: "In Progress", timeLeft: "15 mins" },
-    { id: 3, name: "Bob Johnson", status: "Waiting", timeLeft: "25 mins" },
-  ]);
-
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
