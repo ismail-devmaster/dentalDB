@@ -28,10 +28,21 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import Appointments from "@/app/doctor/appointments";
+
+interface Appointment {
+  id: number;
+  date: string;
+  time: string | null;
+  doctor: string | null;
+  reason: string | null;
+  outcome?: string;
+  notes?: string;
+}
 
 export default function MainFile() {
   const { toast } = useToast();
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
@@ -59,8 +70,8 @@ export default function MainFile() {
       reason: "Annual Physical",
     },
   ]);
-  const [waitingAppointments, setWaitingAppointments] = useState([]);
-  const [appointmentToReschedule, setAppointmentToReschedule] = useState(null);
+  const [waitingAppointments, setWaitingAppointments] = useState<Appointment[]>([]);
+  const [appointmentToReschedule, setAppointmentToReschedule] = useState<Appointment | null>(null);
   const [isRescheduleDialogOpen, setIsRescheduleDialogOpen] = useState(false);
   const [appointmentHistory, setAppointmentHistory] = useState([
     {
@@ -109,8 +120,8 @@ export default function MainFile() {
       notes: "X-rays taken of left knee. Recommended physical therapy.",
     },
   ]);
-  const [selectedAppointmentDetails, setSelectedAppointmentDetails] =
-    useState(null);
+  const [selectedAppointmentDetails, setSelectedAppointmentDetails] = 
+    useState<Appointment | null>(null);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("book-new");
 
@@ -137,7 +148,7 @@ export default function MainFile() {
   const handleConfirmAppointment = () => {
     const newAppointment = {
       id: Date.now(),
-      date: format(date, "MMMM d, yyyy"),
+      date: date ? format(date, "MMMM d, yyyy") : format(new Date(), "MMMM d, yyyy"),
       time: selectedTime,
       doctor: selectedDoctor,
       reason: selectedReason,
@@ -150,10 +161,9 @@ export default function MainFile() {
 
     toast({
       title: "Appointment Confirmed",
-      description: `Your appointment is scheduled for ${format(
-        date,
-        "MMMM d, yyyy"
-      )} at ${selectedTime}`,
+      description: `Your appointment is scheduled for ${
+        date ? format(date, "MMMM d, yyyy") : format(new Date(), "MMMM d, yyyy")
+      } at ${selectedTime}`,
     });
 
     // Reset form
@@ -181,7 +191,7 @@ export default function MainFile() {
     });
   };
 
-  const handleReschedule = (appointment) => {
+  const handleReschedule = (appointment: Appointment) => {
     setAppointmentToReschedule(appointment);
     setIsRescheduleDialogOpen(true);
   };
@@ -200,11 +210,11 @@ export default function MainFile() {
       ...appointmentToReschedule,
       date: format(date, "MMMM d, yyyy"),
       time: selectedTime,
-    };
+    } as Appointment;
 
     // Remove the appointment from upcomingAppointments
     setUpcomingAppointments((appointments) =>
-      appointments.filter((apt) => apt.id !== appointmentToReschedule.id)
+      appointments.filter((apt) => apt.id !== appointmentToReschedule?.id)
     );
 
     // Add the updated appointment to waitingAppointments
@@ -228,7 +238,7 @@ export default function MainFile() {
     setActiveTab("waiting");
   };
 
-  const handleCancel = (appointmentId) => {
+  const handleCancel = (appointmentId: number) => {
     setUpcomingAppointments((appointments) =>
       appointments.filter((apt) => apt.id !== appointmentId)
     );
@@ -242,21 +252,17 @@ export default function MainFile() {
     });
   };
 
-  const handleViewDetails = (appointment) => {
+  const handleViewDetails = (appointment: Appointment) => {
     setSelectedAppointmentDetails(appointment);
     setIsDetailsDialogOpen(true);
   };
 
   const today = new Date();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const openDialog = () => setIsDialogOpen(true);
-  const closeDialog = () => setIsDialogOpen(false);
-
   const disabledDates = ["2024-11-25", "2024-12-31"];
 
   // Function to handle date selection, with disabled dates check
-  const handleSelectDate = (selectedDate) => {
+  const handleSelectDate = (selectedDate: Date) => {
     const isDisabled = disabledDates.some(
       (disabledDate) =>
         new Date(disabledDate).toDateString() === selectedDate.toDateString()
@@ -309,7 +315,6 @@ export default function MainFile() {
           <TabsContent value="book-new">
             <BookNew
               date={date}
-              setDate={setDate}
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
               selectedDoctor={selectedDoctor}
@@ -375,7 +380,7 @@ export default function MainFile() {
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={(newDate: Date | undefined) => newDate && setDate(newDate)}
                   fromDate={today}
                   className="rounded-md border"
                 />

@@ -38,8 +38,6 @@ import {
   Edit2,
   Bell,
   Shield,
-  Moon,
-  Sun,
 } from "lucide-react";
 
 export default function MyProfilePage() {

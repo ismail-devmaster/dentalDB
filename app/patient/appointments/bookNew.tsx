@@ -21,14 +21,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Add this interface before the component
 interface BookNewProps {
-  date: Date;
-  setDate: (date: Date) => void;
-  selectedTime: string;
-  setSelectedTime: (time: string) => void;
-  selectedDoctor: string;
-  setSelectedDoctor: (doctor: string) => void;
-  selectedReason: string;
-  setSelectedReason: (reason: string) => void;
+  date: Date | undefined;
+  selectedTime: string | null;
+  setSelectedTime: (time: string | null) => void;
+  selectedDoctor: string | null;
+  setSelectedDoctor: (doctor: string | null) => void;
+  selectedReason: string | null;
+  setSelectedReason: (reason: string | null) => void;
   additionalNotes: string;
   setAdditionalNotes: (notes: string) => void;
   handleConfirmAppointment: () => void;
@@ -40,7 +39,6 @@ interface BookNewProps {
 
 export default function BookNew({
   date,
-  setDate,
   selectedTime,
   setSelectedTime,
   selectedDoctor,

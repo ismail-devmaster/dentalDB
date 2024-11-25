@@ -19,27 +19,11 @@ const ReceptionistDashboardComponent = ({
 }) => {
   const [activeContent, setActiveContent] = React.useState("");
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const [, setShowToggle] = React.useState(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
   const [darkMode, setDarkMode] = useState(false);
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setShowToggle(window.scrollY < 100);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   return (
     <div className="flex h-screen overflow-hidden">
