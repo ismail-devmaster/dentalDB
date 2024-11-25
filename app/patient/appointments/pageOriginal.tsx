@@ -42,6 +42,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Appointment } from "@/app/types/appointment";
 
 export default function AppointmentsPageComponent() {
   const { toast } = useToast();
@@ -110,7 +111,7 @@ export default function AppointmentsPageComponent() {
       return;
     }
 
-    const newAppointment = {
+    const newAppointment: Appointment = {
       id: Date.now(),
       date: format(date, "MMMM d, yyyy"),
       time: selectedTime,
@@ -171,8 +172,8 @@ export default function AppointmentsPageComponent() {
       return;
     }
 
-    const updatedAppointment = {
-      ...appointmentToReschedule,
+    const updatedAppointment: Appointment = {
+      ...appointmentToReschedule!,
       date: format(date, "MMMM d, yyyy"),
       time: selectedTime,
     };
@@ -203,7 +204,7 @@ export default function AppointmentsPageComponent() {
     setActiveTab("waiting");
   };
 
-  const handleCancel = (appointmentId) => {
+  const handleCancel = (appointmentId: number) => {
     setUpcomingAppointments((appointments) =>
       appointments.filter((apt) => apt.id !== appointmentId)
     );
@@ -217,17 +218,17 @@ export default function AppointmentsPageComponent() {
     });
   };
 
-  const handleViewDetails = (appointment) => {
+  const handleViewDetails = (appointment: Appointment) => {
     setSelectedAppointmentDetails(appointment);
     setIsDetailsDialogOpen(true);
   };
 
   const today = new Date();
 
-  const disabledDates = ["2024-11-25", "2024-12-31"];
+  const disabledDates: string[] = ["2024-11-25", "2024-12-31"];
 
   // Function to handle date selection, with disabled dates check
-  const handleSelectDate = (selectedDate) => {
+  const handleSelectDate = (selectedDate: Date) => {
     const isDisabled = disabledDates.some(
       (disabledDate) =>
         new Date(disabledDate).toDateString() === selectedDate.toDateString()
