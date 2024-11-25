@@ -163,7 +163,7 @@ export default function AppointmentsPageComponent() {
   };
 
   const handleConfirmReschedule = () => {
-    if (!date || !selectedTime) {
+    if (!date || !selectedTime || !appointmentToReschedule) {
       toast({
         title: "Error",
         description: "Please select a new date and time.",
@@ -173,7 +173,7 @@ export default function AppointmentsPageComponent() {
     }
 
     const updatedAppointment: Appointment = {
-      ...appointmentToReschedule!,
+      ...appointmentToReschedule,
       date: format(date, "MMMM d, yyyy"),
       time: selectedTime,
     };
@@ -228,13 +228,15 @@ export default function AppointmentsPageComponent() {
   const disabledDates: string[] = ["2024-11-25", "2024-12-31"];
 
   // Function to handle date selection, with disabled dates check
-  const handleSelectDate = (selectedDate: Date) => {
-    const isDisabled = disabledDates.some(
-      (disabledDate) =>
-        new Date(disabledDate).toDateString() === selectedDate.toDateString()
-    );
-    if (!isDisabled) {
-      setDate(selectedDate);
+  const handleSelectDate = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      const isDisabled = disabledDates.some(
+        (disabledDate) =>
+          new Date(disabledDate).toDateString() === selectedDate.toDateString()
+      );
+      if (!isDisabled) {
+        setDate(selectedDate);
+      }
     }
   };
 
