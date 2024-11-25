@@ -271,6 +271,21 @@ export default function MainFile() {
     }
   };
 
+  const updateAppointmentHistory = (appointment: Appointment) => {
+    if (appointment.time) {
+      const historyEntry = {
+        id: appointment.id,
+        date: appointment.date,
+        time: appointment.time as string,
+        doctor: appointment.doctor || '',
+        reason: appointment.reason || '',
+        outcome: 'Completed',
+        notes: appointment.notes || ''
+      };
+      setAppointmentHistory(prev => [...prev, historyEntry]);
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       <main>

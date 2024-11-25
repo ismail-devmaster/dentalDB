@@ -41,19 +41,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 export default function AppointmentsPageComponent() {
   const { toast } = useToast();
@@ -88,53 +76,6 @@ export default function AppointmentsPageComponent() {
   const [waitingAppointments, setWaitingAppointments] = useState([]);
   const [appointmentToReschedule, setAppointmentToReschedule] = useState(null);
   const [isRescheduleDialogOpen, setIsRescheduleDialogOpen] = useState(false);
-  const [appointmentHistory, setAppointmentHistory] = useState([
-    {
-      id: 1,
-      date: "May 20, 2023",
-      time: "2:00 PM",
-      doctor: "Dr. Smith",
-      reason: "Cardiology Checkup",
-      outcome: "Completed",
-      notes: "Patient reported improved symptoms. Follow-up in 3 months.",
-    },
-    {
-      id: 2,
-      date: "May 15, 2023",
-      time: "11:00 AM",
-      doctor: "Dr. Johnson",
-      reason: "Annual Physical",
-      outcome: "Completed",
-      notes: "All vitals normal. Recommended increased physical activity.",
-    },
-    {
-      id: 3,
-      date: "May 10, 2023",
-      time: "3:30 PM",
-      doctor: "Dr. Davis",
-      reason: "Vaccination",
-      outcome: "Completed",
-      notes: "Administered flu vaccine. No adverse reactions observed.",
-    },
-    {
-      id: 4,
-      date: "May 5, 2023",
-      time: "10:00 AM",
-      doctor: "Dr. Wilson",
-      reason: "Dermatology Consult",
-      outcome: "Completed",
-      notes: "Prescribed topical treatment for eczema. Follow-up in 2 weeks.",
-    },
-    {
-      id: 5,
-      date: "May 1, 2023",
-      time: "1:00 PM",
-      doctor: "Dr. Brown",
-      reason: "Orthopedic Evaluation",
-      outcome: "Completed",
-      notes: "X-rays taken of left knee. Recommended physical therapy.",
-    },
-  ]);
   const [selectedAppointmentDetails, setSelectedAppointmentDetails] =
     useState(null);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
@@ -275,10 +216,6 @@ export default function AppointmentsPageComponent() {
 
   const today = new Date();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const openDialog = () => setIsDialogOpen(true);
-  const closeDialog = () => setIsDialogOpen(false);
-
   const disabledDates = ["2024-11-25", "2024-12-31"];
 
   // Function to handle date selection, with disabled dates check
@@ -347,7 +284,6 @@ export default function AppointmentsPageComponent() {
                       <Calendar
                         mode="single"
                         selected={date}
-                        onSelect={setDate}
                         onSelect={handleSelectDate}
                         fromDate={new Date()}
                         className="rounded-md border-gray-200 dark:border-gray-700"
@@ -573,27 +509,7 @@ export default function AppointmentsPageComponent() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {appointmentHistory.map((appointment) => (
-                        <TableRow key={appointment.id}>
-                          <TableCell>{appointment.date}</TableCell>
-                          <TableCell>{appointment.time}</TableCell>
-                          <TableCell>{appointment.doctor}</TableCell>
-                          <TableCell>{appointment.reason}</TableCell>
-                          <TableCell>
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                              {appointment.outcome}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="link"
-                              onClick={() => handleViewDetails(appointment)}
-                            >
-                              View Details
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {/* Your existing code */}
                     </TableBody>
                   </Table>
                 </div>

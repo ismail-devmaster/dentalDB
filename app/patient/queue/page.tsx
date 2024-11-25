@@ -61,6 +61,16 @@ const QueueStatus = () => {
     .slice(0, userPosition - 1)
     .reduce((sum, patient) => sum + patient.individualWaitTime, 0);
 
+  const updateQueue = () => {
+    setQueueData(prevQueue => {
+      // Remove first person from queue
+      const newQueue = prevQueue.slice(1);
+      // Update user position
+      setUserPosition(prev => Math.max(1, prev - 1));
+      return newQueue;
+    });
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
@@ -125,6 +135,7 @@ const QueueStatus = () => {
               </div>
             ))}
           </div>
+          <Button onClick={updateQueue}>Next Patient</Button>
         </CardContent>
       </Card>
     </div>
