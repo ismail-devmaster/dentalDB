@@ -24,12 +24,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-interface PageProps {
-  isNewPatient?: boolean;
-}
-
-const Page: React.FC<PageProps> = ({ isNewPatient = false }) => {
+export default function Page(): JSX.Element {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isNewPatient] = useState(false);
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
@@ -269,6 +267,4 @@ const Page: React.FC<PageProps> = ({ isNewPatient = false }) => {
       </Card>
     </div>
   );
-};
-
-export default Page;
+}
