@@ -42,7 +42,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Appointment } from "@/app/types/appointment";
+import type { Appointment } from "@/app/types/appointment";
 
 export default function AppointmentsPageComponent() {
   const { toast } = useToast();
