@@ -24,7 +24,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const Page = ({ isNewPatient = false }) => {
+interface PageProps {
+  isNewPatient?: boolean;
+}
+
+const Page: React.FC<PageProps> = ({ isNewPatient = false }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <div className="w-full max-w-6xl mx-auto">
