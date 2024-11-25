@@ -28,7 +28,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import Appointments from "@/app/doctor/appointments";
 
 interface Appointment {
   id: number;
