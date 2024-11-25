@@ -4,14 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   User,
   Calendar,
-  Clock,
   FileText,
   CreditCard,
   HourglassIcon,
   Phone,
   Mail,
   MapPin,
-  AlertCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -25,8 +23,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-const page = ({ isNewPatient = false }) => {
+
+export default function Page(): JSX.Element {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isNewPatient] = useState(false);
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
@@ -266,6 +267,4 @@ const page = ({ isNewPatient = false }) => {
       </Card>
     </div>
   );
-};
-
-export default page;
+}
