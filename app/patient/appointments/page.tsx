@@ -28,16 +28,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-
-interface Appointment {
-  id: number;
-  date: string;
-  time: string | null;
-  doctor: string | null;
-  reason: string | null;
-  outcome?: string;
-  notes?: string;
-}
+import { Appointment } from "@/app/types/appointment";
 
 export default function MainFile() {
   const { toast } = useToast();
