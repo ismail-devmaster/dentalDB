@@ -221,7 +221,6 @@ const ReceptionistPatient = () => {
     setPatientToDelete(null);
   };
 
-  const [isHelloDialogOpen, setIsHelloDialogOpen] = React.useState(false);
   const [isPatientInfoDialogOpen, setIsPatientInfoDialogOpen] =
     React.useState(false);
   const handlePatientClick = (patient) => {

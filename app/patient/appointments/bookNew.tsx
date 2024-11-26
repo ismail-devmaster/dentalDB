@@ -19,9 +19,26 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+// Add this interface before the component
+interface BookNewProps {
+  date: Date | undefined;
+  selectedTime: string | null;
+  setSelectedTime: (time: string | null) => void;
+  selectedDoctor: string | null;
+  setSelectedDoctor: (doctor: string | null) => void;
+  selectedReason: string | null;
+  setSelectedReason: (reason: string | null) => void;
+  additionalNotes: string;
+  setAdditionalNotes: (notes: string) => void;
+  handleConfirmAppointment: () => void;
+  handleCancelBooking: () => void;
+  timeSlots: string[];
+  reasons: string[];
+  handleSelectDate: (date: Date) => void;
+}
+
 export default function BookNew({
   date,
-  setDate,
   selectedTime,
   setSelectedTime,
   selectedDoctor,
@@ -35,7 +52,7 @@ export default function BookNew({
   timeSlots,
   reasons,
   handleSelectDate,
-}) {
+}: BookNewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       <Card className="md:col-span-2">
@@ -48,8 +65,7 @@ export default function BookNew({
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={setDate}
-                onSelect={handleSelectDate}
+                onSelect={(date: Date | undefined) => date && handleSelectDate(date)}
                 fromDate={new Date()}
                 className="rounded-md border-gray-200 dark:border-gray-700"
               />

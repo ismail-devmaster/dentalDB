@@ -9,8 +9,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Appointment } from "@/app/types/appointment";
 
-export default function History({ appointmentHistory, handleViewDetails }) {
+interface HistoryProps {
+  appointmentHistory: Appointment[];
+  handleViewDetails: (appointment: Appointment) => void;
+}
+
+const History: React.FC<HistoryProps> = ({ appointmentHistory, handleViewDetails }) => {
   return (
     <Card>
       <CardHeader>
@@ -57,4 +63,6 @@ export default function History({ appointmentHistory, handleViewDetails }) {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default History;

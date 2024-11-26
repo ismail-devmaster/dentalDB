@@ -19,33 +19,11 @@ const ReceptionistDashboardComponent = ({
 }) => {
   const [activeContent, setActiveContent] = React.useState("");
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const [, setShowToggle] = React.useState(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
   const [darkMode, setDarkMode] = useState(false);
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setShowToggle(window.scrollY < 100);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  const [patientQueue, setPatientQueue] = React.useState([
-    { id: 1, name: "John Doe", status: "Waiting", timeLeft: "10 mins" },
-    { id: 2, name: "Jane Smith", status: "In Progress", timeLeft: "15 mins" },
-    { id: 3, name: "Bob Johnson", status: "Waiting", timeLeft: "25 mins" },
-  ]);
 
   return (
     <div className="flex h-screen overflow-hidden">

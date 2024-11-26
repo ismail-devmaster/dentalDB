@@ -38,8 +38,6 @@ import {
   Edit2,
   Bell,
   Shield,
-  Moon,
-  Sun,
 } from "lucide-react";
 
 export default function MyProfilePage() {
@@ -54,15 +52,15 @@ export default function MyProfilePage() {
       "Allergies: Penicillin, Peanuts\nChronic Conditions: Hypertension (2015), Type 2 Diabetes (2018)\nPast Surgeries: Appendectomy (2010)",
   });
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    if (darkMode) {
+    if (isDarkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [darkMode]);
+  }, [isDarkMode]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -76,7 +74,7 @@ export default function MyProfilePage() {
   };
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+    setIsDarkMode(prev => !prev);
   };
 
   return (
@@ -510,6 +508,10 @@ export default function MyProfilePage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <Button onClick={toggleDarkMode}>
+        Toggle Dark Mode
+      </Button>
     </div>
   );
 }
