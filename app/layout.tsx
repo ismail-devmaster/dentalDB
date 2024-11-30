@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import React from 'react';
+import { SidebarProvider } from "@/components/ui/sidebar";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -13,7 +14,7 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Dental Center",
   description: "Dental Managment system",
 };
@@ -24,12 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <SidebarProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </SidebarProvider>
   );
 }

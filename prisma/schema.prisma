@@ -1,0 +1,366 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ======= ENUMS =======
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum AppointmentStatusEnum {
+  SCHEDULED
+  CONFIRMED
+  CHECKED_IN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  MISSED
+}
+enum AppointmentTypeEnum {
+  CHECKUP
+  CONSULTATION
+  SURGERY
+  EMERGENCY
+  FOLLOWUP
+}
+enum PaymentStatusEnum {
+  PENDING
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  REFUNDED
+  CANCELLED
+}
+
+enum QueueStatusEnum {
+  WAITING
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+  CANCELLED
+}
+
+enum ContactMethodEnum {
+  EMAIL
+  SMS
+  PHONE
+  WHATSAPP
+}
+
+enum RoleEnum {
+  ADMIN
+  DOCTOR
+  PATIENT
+  RECEPTIONIST
+}
+
+enum PermissionEnum {
+  VIEW_PATIENT
+  CREATE_PATIENT
+  UPDATE_PATIENT
+  DELETE_PATIENT
+  VIEW_DOCTOR
+  CREATE_DOCTOR
+  UPDATE_DOCTOR
+  DELETE_DOCTOR
+  VIEW_APPOINTMENT
+  CREATE_APPOINTMENT
+  UPDATE_APPOINTMENT
+  DELETE_APPOINTMENT
+  VIEW_PAYMENT
+  CREATE_PAYMENT
+  UPDATE_PAYMENT
+  DELETE_PAYMENT
+  VIEW_QUEUE
+  UPDATE_QUEUE
+  VIEW_REPORTS
+  CREATE_REPORT
+  VIEW_MEDICAL_RECORD
+  CREATE_MEDICAL_RECORD
+  UPDATE_MEDICAL_RECORD
+  DELETE_MEDICAL_RECORD
+}
+
+// ======= BASE MODELS =======
+ model BaseUser {
+     id        Int      @id @default(autoincrement())
+     firstName String
+     lastName  String
+     fullName  String   @default("") 
+     email     String?  @unique
+     password  String?
+     phone     String?  @unique
+     createdAt DateTime @default(now())
+     updatedAt DateTime @updatedAt
+
+     roles     Role[]
+
+     @@map("base_users")
+     Receptionist Receptionist[]
+   }
+
+// ======= ROLE MODEL =======
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      RoleEnum @unique
+  permissions PermissionEnum[]
+
+  users     BaseUser[]
+
+  @@map("roles")
+}
+
+// ======= MAIN MODELS =======
+model Patient {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String?
+  dateOfBirth       DateTime
+  age               Int
+  sexId             Int
+  medicalHistory    String?
+  address           Address?
+  insurance         Insurance?
+  lastVisit         DateTime?
+  registrationDate  DateTime          @default(now())
+  isActive          Boolean           @default(true)
+
+  // Relationships
+  sex               Sex               @relation(fields: [sexId], references: [id])
+  appointments      Appointment[]     
+  payments          Payment[]         
+  queueEntries      Queue[]           
+  medicalRecords    MedicalRecord[]   
+  emergencyContacts EmergencyContact[] 
+  contactPreference ContactPreference? 
+
+  @@index([firstName])
+  @@index([lastName])
+  @@index([email])
+  @@map("patients")
+}
+
+model Doctor {
+  id             Int        @id @default(autoincrement())
+  firstName      String
+  lastName       String
+  specialtyId    Int
+  licenseNumber  String     @unique
+  availability   Json?
+
+  // Relationships
+  specialty      Specialty  @relation(fields: [specialtyId], references: [id])
+  appointments   Appointment[] 
+  payments       Payment[]     
+  medicalRecords MedicalRecord[] 
+
+  // Metadata
+  isActive       Boolean    @default(true)
+  joiningDate    DateTime   @default(now())
+
+  @@index([firstName])
+  @@index([lastName])
+  @@index([licenseNumber])
+  @@map("doctors")
+}
+
+model Receptionist {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  hireDate       DateTime @default(now())
+  
+  // Relationships
+  user           BaseUser @relation(fields: [userId], references: [id])
+  appointments   Appointment[] 
+
+  @@map("receptionists")
+}
+
+model Address {
+  id         Int     @id @default(autoincrement())
+  patientId  Int     @unique
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String @default("USA")
+
+  patient    Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Insurance {
+  id           Int     @id @default(autoincrement())
+  patientId    Int     @unique
+  provider     String
+  policyNumber String
+  groupNumber  String?
+  validFrom    DateTime
+  validUntil   DateTime?
+
+  patient      Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("insurance")
+}
+
+model EmergencyContact {
+  id            Int     @id @default(autoincrement())
+  patientId     Int
+  name          String
+  relationship  String
+  phone         String
+  email         String?
+  isActive      Boolean @default(true)
+
+  patient       Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("emergency_contacts")
+}
+
+model ContactPreference {
+  id                Int              @id @default(autoincrement())
+  patientId         Int              @unique
+  preferredMethod   ContactMethodEnum
+  smsEnabled        Boolean          @default(false)
+  emailEnabled      Boolean          @default(false)
+  reminderEnabled   Boolean          @default(true)
+
+  patient           Patient          @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("contact_preferences")
+}
+
+model Sex {
+  id        Int       @id @default(autoincrement())
+  gender    Gender    @unique
+  patients  Patient[]
+
+  @@map("sexes")
+}
+
+model AppointmentType {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  appointments Appointment[]
+
+  @@map("appointment_types")
+}
+model Appointment {
+  id              Int              @id @default(autoincrement())
+  patientId       Int
+  doctorId        Int
+  typeId          Int
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  duration        Int              @default(30)
+  notes           String?
+  statusId        Int
+  reason          String?
+
+  // Relationships
+  type            AppointmentType   @relation(fields: [typeId], references: [id])
+  patient         Patient           @relation(fields: [patientId], references: [id])
+  doctor          Doctor            @relation(fields: [doctorId], references: [id])
+  status          AppointmentStatus @relation(fields: [statusId], references: [id])
+
+  @@index([date])
+  @@index([doctorId, date])
+  @@index([patientId, date])
+  @@map("appointments")
+  Receptionist Receptionist[]
+  MedicalRecord MedicalRecord[]
+}
+
+
+
+model Queue {
+  id                Int              @id @default(autoincrement())
+  patientId         Int
+  status            QueueStatusEnum
+  estimatedWaitTime Int              // in minutes
+  arrivalTime       DateTime
+  startTime         DateTime?
+  endTime           DateTime?
+  priority          Int              @default(0)
+  notes             String?
+
+  patient           Patient          @relation(fields: [patientId], references: [id])
+
+  @@index([status])
+  @@index([arrivalTime])
+  @@map("queue")
+}
+
+   model Payment {
+     id             Int             @id @default(autoincrement())
+     patientId      Int
+     doctorId       Int
+     amount         Decimal          @db.Decimal(10, 2)
+     description    String?
+     paymentDate    DateTime
+     dueDate        DateTime?
+     status         PaymentStatusEnum
+
+     // Relationships
+     patient        Patient         @relation(fields: [patientId], references: [id])
+     doctor         Doctor          @relation(fields: [doctorId], references: [id])
+
+     paymentMethod  String?
+     transactionId  String?         @unique
+     invoiceNumber  String          @unique
+
+     @@index([paymentDate])
+     @@index([patientId])
+     @@index([status])
+     @@map("payments")
+   }
+
+model Specialty {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  description String?
+  doctors    Doctor[]
+
+  @@map("specialties")
+}
+
+model AppointmentStatus {
+  id          Int                    @id @default(autoincrement())
+  name        AppointmentStatusEnum @unique
+  description String
+
+  appointments Appointment[]
+
+  @@map("appointment_statuses")
+}
+
+model MedicalRecord {
+  id             Int      @id @default(autoincrement())
+  patientId      Int
+  doctorId       Int
+  appointmentId  Int
+  diagnosis      String
+  treatment      String
+  notes          String?
+
+  patient        Patient      @relation(fields: [patientId], references: [id])
+  doctor         Doctor       @relation(fields: [doctorId], references: [id])
+  appointment    Appointment  @relation(fields: [appointmentId], references: [id])
+
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([appointmentId])
+  @@map("medical_records")
+}
+
+
