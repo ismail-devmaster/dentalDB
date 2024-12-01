@@ -11,13 +11,11 @@ datasource db {
 enum Gender {
   MALE
   FEMALE
-  OTHER
 }
 
 enum AppointmentStatusEnum {
   SCHEDULED
   CONFIRMED
-  CHECKED_IN
   IN_PROGRESS
   COMPLETED
   CANCELLED
@@ -51,9 +49,7 @@ enum QueueStatusEnum {
 
 enum ContactMethodEnum {
   EMAIL
-  SMS
   PHONE
-  WHATSAPP
 }
 
 enum RoleEnum {
@@ -82,8 +78,6 @@ enum PermissionEnum {
   DELETE_PAYMENT
   VIEW_QUEUE
   UPDATE_QUEUE
-  VIEW_REPORTS
-  CREATE_REPORT
   VIEW_MEDICAL_RECORD
   CREATE_MEDICAL_RECORD
   UPDATE_MEDICAL_RECORD
@@ -95,7 +89,7 @@ model BaseUser {
   id           Int            @id @default(autoincrement())
   firstName    String
   lastName     String
-  fullName     String         @default("") 
+  fullName     String?        @default("")
   email        String?        @unique
   password     String?
   phone        String?        @unique
@@ -104,7 +98,6 @@ model BaseUser {
 
   roles        Role[]
   Receptionist Receptionist?
-
   @@map("base_users")
 }
 
@@ -132,7 +125,7 @@ model Patient {
   insurance         Insurance?
   lastVisit         DateTime?
   registrationDate  DateTime          @default(now())
-  isActive          Boolean           @default(true)
+
 
   // Relationships
   sex               Sex               @relation(fields: [sexId], references: [id])
@@ -155,7 +148,7 @@ model Doctor {
   lastName       String
   specialtyId    Int
   licenseNumber  String     @unique
-  availability   Json?
+  availability   Json? // ENUM: { "day": "MONDAY", "time": "09:00" }
 
   // Relationships
   specialty      Specialty  @relation(fields: [specialtyId], references: [id])
@@ -165,7 +158,7 @@ model Doctor {
 
   // Metadata
   isActive       Boolean    @default(true)
-  joiningDate    DateTime   @default(now())
+  
 
   @@index([firstName])
   @@index([lastName])
