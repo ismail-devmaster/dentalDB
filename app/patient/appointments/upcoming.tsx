@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, Clock, User } from "lucide-react";
+import { Appointment } from "@prisma/client";
 
 export default function Upcoming({
   upcomingAppointments,
@@ -36,11 +37,11 @@ export default function Upcoming({
             <div className="flex items-center mb-2">
               <User className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <p className="font-semibold text-gray-900 dark:text-white">
-                {appointment.doctor}
+                {appointment.doctor.firstName} {appointment.doctor.lastName}
               </p>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {appointment.reason}
+              {appointment.type}
             </p>
           </CardContent>
           <CardFooter className="flex justify-between">

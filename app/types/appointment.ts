@@ -1,4 +1,6 @@
 export interface Appointment {
+  status: string;
+  patientId: any;
   id: number;
   date: string;
   time: string | null;

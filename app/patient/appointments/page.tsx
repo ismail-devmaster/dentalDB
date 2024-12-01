@@ -1,7 +1,7 @@
 // src/components/MainFile.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import BookNew from "./bookNew";
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Appointment } from "@/app/types/appointment";
+import BASE_URL from "@/lib/config";
 
 export default function MainFile() {
   const { toast } = useToast();
@@ -37,29 +38,7 @@ export default function MainFile() {
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState<string>("");
-  const [upcomingAppointments, setUpcomingAppointments] = useState([
-    {
-      id: 1,
-      date: "June 15, 2023",
-      time: "2:00 PM",
-      doctor: "Dr. Smith",
-      reason: "Cardiology Checkup",
-    },
-    {
-      id: 2,
-      date: "June 16, 2023",
-      time: "3:00 PM",
-      doctor: "Dr. Johnson",
-      reason: "Follow-up Appointment",
-    },
-    {
-      id: 3,
-      date: "June 17, 2023",
-      time: "10:00 AM",
-      doctor: "Dr. Davis",
-      reason: "Annual Physical",
-    },
-  ]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState(); // todo
   const [waitingAppointments, setWaitingAppointments] = useState<Appointment[]>([]);
   const [appointmentToReschedule, setAppointmentToReschedule] = useState<Appointment | null>(null);
   const [isRescheduleDialogOpen, setIsRescheduleDialogOpen] = useState(false);
@@ -134,14 +113,15 @@ export default function MainFile() {
     "Prescription Refill",
     "Other (please specify)",
   ];
-
+ 
   const handleConfirmAppointment = () => {
     const newAppointment = {
+
       id: Date.now(),
       date: date ? format(date, "MMMM d, yyyy") : format(new Date(), "MMMM d, yyyy"),
       time: selectedTime,
       doctor: selectedDoctor,
-      reason: selectedReason,
+      reason: selectedReason, // appointment type
     };
 
     setWaitingAppointments((prevAppointments) => [
@@ -193,6 +173,8 @@ export default function MainFile() {
         description: "Please select a new date and time.",
         variant: "destructive",
       });
+
+
       return;
     }
 
@@ -276,6 +258,19 @@ export default function MainFile() {
       setAppointmentHistory(prev => [...prev, historyEntry]);
     }
   };
+
+  const fetchAppointments = async () => {
+    const response = await fetch(`${BASE_URL}/appointments`);
+    const data = await response.json();
+    console.log(data);
+    setUpcomingAppointments(data);
+
+  };
+  useEffect(() => {
+    fetchAppointments();
+  
+  }, []);
+  console.log(upcomingAppointments);
 
   return (
     <div className="w-full max-w-6xl mx-auto">
